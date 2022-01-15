@@ -1,0 +1,409 @@
+\documentclass[landscape,fontscale=.5,paperwidth=36in,paperheight=24in]{baposter} % Adjust the font scale/size here
+
+\usepackage{graphicx} % Required for including images
+%%\graphicspath{{figures/}} % Directory in which figures are stored
+\usepackage{amsmath, amssymb} % Adds new symbols to be used in math mode
+\usepackage{booktabs} % Top and bottom rules for tables
+\usepackage{enumerate} % Used to reduce itemize/enumerate spacing
+\usepackage{palatino} % Use the Palatino font
+\usepackage[font=small,labelfont=bf]{caption} % Required for specifying captions to tables and figures
+
+\usepackage{multicol} % Required for multiple columns
+\setlength{\columnsep}{1.5em} % Slightly increase the space between columns
+\setlength{\columnseprule}{0mm} % No horizontal rule between columns
+
+\newcommand{\compresslist}{ % Define a command to reduce spacing within itemize/enumerate environments, this is used right after \begin{itemize} or \begin{enumerate}
+\setlength{\itemsep}{1pt}
+\setlength{\parskip}{0pt}
+\setlength{\parsep}{0pt}
+}
+\renewcommand{\le}{\leqslant}
+\renewcommand{\ge}{\geqslant}
+\definecolor{mycolor}{rgb}{0.9,0.35,0} % Defines the color used for content box headers
+
+\begin{document}
+
+\begin{poster}
+{
+headerborder=closed, % Adds a border around the header of content boxes
+columns=3,
+colspacing=8pt, % Column spacing
+bgColorOne=white, % Background color for the gradient on the left side of the poster
+bgColorTwo=white, % Background color for the gradient on the right side of the poster
+borderColor=black, % Border color
+headerColorOne=black, % Background color for the header in the content boxes (left side)
+headerColorTwo=mycolor, % Background color for the header in the content boxes (right side)
+headerFontColor=white, % Text color for the header text in the content boxes
+boxColorOne=white, % Background color of the content boxes
+textborder=roundedleft, % Format of the border around content boxes, can be: none, bars, coils, triangles, rectangle, rounded, roundedsmall, roundedright or faded
+eyecatcher=true, % Set to false for ignoring the left logo in the title and move the title left
+headerheight=0.11\textheight, % Height of the header
+headershape=roundedright, % Specify the rounded corner in the content box headers, can be: rectangle, small-rounded, roundedright, roundedleft or rounded
+headerfont=\Large\bf\textsc, % Large, bold and sans serif font in the headers of content boxes
+%textfont={\setlength{\parindent}{1.5em}}, % Uncomment for paragraph indentation
+linewidth=.5pt % Width of the border lines around content boxes
+}
+%----------------------------------------------------------------------------------------
+%	TITLE SECTION 
+%----------------------------------------------------------------------------------------
+%
+{\includegraphics[height=6em]{igl-logo-small.png}} % First university/lab logo on the left
+{\bf\textsc{Competition Among Walkers on a Torus}\vspace{0.5em}} % Poster title
+{\textsc{[\textbf{Scholars}:  Tyler Gall, Mingqi Wang, and Tianyi Wang],\quad [\textbf{Team Leader}: Grigory Terlov],\quad [\textbf{Faculty Advisors}: Partha Dey and Daesung Kim]}\\[1ex]
+University of Illinois at Urbana--Champaign} % Author names and institution
+{\includegraphics[height=6em]{imark.png}} % Second university/lab logo on the right
+
+	%----------------------------------------------------------------------------------------
+	%	Info
+	%----------------------------------------------------------------------------------------
+	\headerbox{}%
+	{name=info, column=0, span=3, above=bottom, textborder=rectangle,headerborder=closed,headershape=rectangle, boxheaderheight=0pt}{
+		\begin{center}
+			IGL Poster Session Fall 2021. Support for this project was provided by the Illinois Geometry Lab and the Department of Mathematics at the University of Illinois at Urbana-Champaign.
+		\end{center}
+	}
+
+
+	%----------------------------------------------------------------------------------------
+	%	ABSTRACT
+	%----------------------------------------------------------------------------------------
+
+	\headerbox{Abstract}{name=abstract,column=0,row=0}{
+		\smallskip
+		
+		\begin{enumerate}[$\bullet$]\setlength{\itemsep}{1pt}
+			\item Simulated a single random walker on a large discrete 2D and 3D torus efficiently, tracking its proportional area covered on the torus, $S(t)$.
+
+			\item Approximated expectation and variance of $S(t)$ and plotted its histogram.
+
+			\item Investigated the transition time in the behavior of the area covered by $S(t)$ and introduced competition among multiple random walkers on the torus.
+
+			\item Explore and compare strategies an agent could take to maximize the area of the covered region in competition with random walks. Study effects of different levels of information available to the agent, such as local occupancy and its past.
+			\item Simulated the above in 3 dimensions for these strategies.
+
+			\item Compared collaborative strategies against solo strategies in both 2D and 3D.
+		\end{enumerate}
+		\smallskip
+	}
+	
+	\headerbox{Guiding Question}{name=gq,column=0,below=abstract}{
+		\smallskip
+		How can we devise a strategy that maximizes area covered against random walk and other strategies in both two and three dimensional torus?
+	}
+
+	%----------------------------------------------------------------------------------------
+	%	Introduction
+	%----------------------------------------------------------------------------------------
+	\headerbox{Introduction}{name=intro,column=0,below=gq}{
+		\smallskip
+
+		\begin{multicols}{3}
+			\begin{center}
+				\includegraphics[width=1\linewidth]{torus.png}
+				\\A 2D Torus
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=.8\linewidth]{grid with random walk.JPG}
+				\\A 2D Random Walk
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=1\linewidth]{competition.png}
+				\\Competition
+			\end{center}
+		\end{multicols}
+
+		\begin{enumerate}[$\bullet$]\setlength{\itemsep}{1pt}
+			\item A d-dimensional \textbf{torus} is defined as $\mathbb{T}^d=(\mathbb{Z}/n\mathbb{Z})^d$.
+
+			\item A \textbf{strategy} is a function that accepts its surrounding vertices and its own memory as parameters and returns a direction.
+
+			\item A \textbf{random walk (RW)} is a sequence of uniformly random steps between vertices, in our case on the torus.
+
+			\item An agent's \textbf{proportional area}, $S(t)$ is the proportion of vertices claimed by the agent. 
+
+			\item \textbf{Competition} between agents compares area covered by each agent to see which is larger, while \textbf{collaboration} examines the total area covered by both agents.
+		\end{enumerate}
+		\smallskip
+		
+	}
+
+	%----------------------------------------------------------------------------------------
+	%	STRATEGIES
+	%----------------------------------------------------------------------------------------
+	\headerbox{Strategies}{name=strategies, column=0, below=intro}{
+		\smallskip
+		
+		\begin{enumerate}[$\bullet$]\setlength{\itemsep}{1pt}
+			\item \textbf{Greedy biased (GB)}: assign a priority order of directions (e.g. right, down, left, up) and always choose to move to the first unclaimed adjacent vertex in the priority; if none are open, choose at random.
+
+			\item \textbf{Greedy unbiased (GU)}: choose to move to any unclaimed adjacent vertex with equal probability; if none are open, choose at random.
+
+			\item \textbf{Viki}: prioritize choosing to turn left if the vertex is unclaimed, then straight ahead, then right; if none are open, choose at random.
+		\end{enumerate}
+		\smallskip
+		
+	}
+
+	%
+	%%----------------------------------------------------------------------------------------
+	%%	2D
+	%%----------------------------------------------------------------------------------------
+	\headerbox{Two Dimensions}{name=2d, column=1,row=0}{
+		\bigskip
+
+		\begin{multicols}{2}
+			\begin{center}
+				\includegraphics[width=.9\linewidth]{rw.JPG}
+				\\$S(t)$ for RW vs $u$ Value
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=.9\linewidth]{rw loglinear.JPG}
+				\\$\log(1 - S(t))$ for RW vs $u$ Value
+			\end{center}
+		\end{multicols}
+
+		\begin{center}
+			2D Random Walk Data at times $t=u\cdot n\log n$ ($n = 1001$ and sample size $= 1000$).
+		\end{center}
+	}
+
+	%----------------------------------------------------------------------------------------
+	%	RW PICS
+	%----------------------------------------------------------------------------------------
+	\headerbox{Random Walk Progression ($n=101$)}{name=rwp,column=1, row=1, below=2d}{
+		\bigskip
+
+		\begin{multicols}{4}
+			\begin{center}
+				\includegraphics[width=0.9\linewidth]{RWPictures/first_u_val.JPG}
+				\\$u=0.05$
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=0.9\linewidth]{RWPictures/second_u_val.JPG}
+				\\$u=0.30$
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=0.9\linewidth]{RWPictures/third_u_val.JPG}
+				\\$u=0.55$
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=0.9\linewidth]{RWPictures/fourth_u_val.JPG}
+				\\$u=2.00$
+			\end{center}
+		\end{multicols}
+		\begin{center}
+			Area covered by a 2D Random Walk at time $u\cdot n^2\log n.$
+		\end{center}
+	}
+
+	%----------------------------------------------------------------------------------------
+	%%	2D COMPETITION
+	%%----------------------------------------------------------------------------------------
+	\headerbox{2D Competition ($n=1001$, sample size $=1000$)}{name=2dc,column=1,below=rwp}{
+
+		\begin{minipage}{0.4\textwidth}
+			\begin{center}
+				\includegraphics[width=.9\linewidth]{strategies against random walk graph.JPG}
+				\\ Area Covered against RW vs $u$ value
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.6\textwidth}
+			\begin{center}
+				\begin{tabular}{|l|l|l|l|l|}
+					\hline
+					Strategy & RW      & GB      & GU      & Viki    \\
+					\hline
+					RW       & 0.50000 & 0.17867 & 0.34259 & 0.10406 \\
+					\hline
+					GB       & 0.82133 & 0.50000 & 0.73158 & 0.61132 \\
+					\hline
+					GU       & 0.65741 & 0.26842 & 0.50000 & 0.39310 \\
+					\hline
+					Viki     & 0.89594 & 0.38868 & 0.60690 & 0.50000 \\
+					\hline
+				\end{tabular}
+				\medskip
+
+				Area Covered Head-to-Head
+				\bigskip
+
+				\fbox{ \small
+					green=viki,\
+					blue=greedy biased, \
+					red=greedy unbiased}
+
+			\end{center}
+		\end{minipage}
+	}
+
+	%----------------------------------------------------------------------------------------
+	%%	
+	%%---------------------------------------------------------------------------------------
+	\headerbox{Competition on 2D Torus with Distortion}{name=compd,column=1,below=2dc,bottomaligned=strategies}{
+		A \textbf{distortion} of the torus is when a vertex is deleted, meaning an agent cannot move to or claim that vertex. The value of $m$ determines the probability with which any given vertex is deleted at the beginning of the simulation.
+
+		\medskip
+
+		\begin{minipage}{0.35\textwidth}
+			\begin{center}
+				\includegraphics[width=0.65\linewidth]{gridmines.JPG}\\
+				A torus with distortions\\
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.65\textwidth}
+			\begin{center}
+
+				\begin{tabular}{ |l|c|c|c| }
+					\hline
+					Strategy & $m=0.01$ & $m=0.1$ & $m=0.3$ \\
+					\hline
+					GB       & 0.68912  & 0.61065 & 0.65890 \\
+					\hline
+					GU       & 0.68047  & 0.65924 & 0.62900 \\
+					\hline
+				\end{tabular}
+
+				\medskip
+
+				Area Covered vs RW with Distortions\\
+				($n=1001$, sample size $=1000$)
+			\end{center}
+		\end{minipage}
+	}
+
+	%----------------------------------------------------------------------------------------
+	%%	3D
+	%%---------------------------------------------------------------------------------------
+	\headerbox{Three Dimensions}{name=3d, column=2,row=0,bottomaligned=2d}{
+		\bigskip
+
+		\begin{multicols}{2}
+			\begin{center}
+				\includegraphics[width=0.92\linewidth]{rw3d.JPG}
+				\\$S(t)$ for RW vs $u$ Value
+			\end{center}
+
+			\begin{center}
+				\includegraphics[width=0.92\linewidth]{rw3dloglinear.JPG}
+				\\$\log(1 - S(t))$ for RW vs $u$ Value
+			\end{center}
+		\end{multicols}
+
+		\begin{center}
+			3D Random Walk Data at times $u\cdot n^{3}$ ($n=349$ and sample  size $=250$)
+		\end{center}
+	}
+
+	%----------------------------------------------------------------------------------------
+	%%	
+	%%---------------------------------------------------------------------------------------
+	\headerbox{3D Competition ($n=233$, sample size $=1000$)}{name=3dc,column=2,below=3d,bottomaligned=rwp}{
+		\medskip
+
+		\begin{minipage}{0.4\textwidth}
+			\begin{center}
+				\includegraphics[width=1\linewidth]{3d strats against rw.JPG}\\
+				Area Covered against RW vs $u$ value
+			\end{center}
+		\end{minipage}
+		\begin{minipage}{0.6\textwidth}
+			\begin{center}
+				\begin{tabular}{|l|c|c|c| }
+					\hline
+					Strategy & RW      & GB      & GU      \\
+					\hline
+					RW       & 0.50000 & 0.31957 & 0.26363 \\
+					\hline
+					GB       & 0.68043 & 0.50000 & 0.44579 \\
+					\hline
+					GU       & 0.73637 & 0.55421 & 0.50000 \\
+					\hline
+				\end{tabular}
+
+				Area Covered Head-to-Head
+
+				\bigskip
+
+				%\begin{mdframed}[style=MyBox]
+				\fbox{ \small
+					blue=greedy biased, \
+					red=greedy unbiased}
+				%\end{mdframed}
+
+			\end{center}
+		\end{minipage}
+
+		\medskip
+
+	}
+
+	%----------------------------------------------------------------------------------------
+	%%	COLLABORATION
+	%%---------------------------------------------------------------------------------------
+	\headerbox{Collaboration}{name=collab,column=2,below=3dc}{
+		\medskip
+
+		\begin{minipage}{0.4\textwidth}
+			\centering
+			\includegraphics[width=1\linewidth]{collabdiff.JPG}
+			\\3 GU Area - GU Area vs $u$ value (2D, $n=1001$, sample size $=1000$)
+		\end{minipage}%
+		\begin{minipage}{0.6\textwidth}
+			\begin{center}
+				\begin{tabular}{ |l|c|c| }
+					\hline
+					Strategies        & First   & Second  \\
+					\hline
+					GU vs 3 GU (2D)   & 0.49896 & 0.50104 \\
+					\hline
+					GB vs GU (3D)     & 0.55532 & 0.44468 \\
+					\hline
+					GB vs 3 GB (3D)   & 0.47672 & 0.52328 \\
+					\hline
+					GU vs 3 GU (3D)   & 0.49992 & 0.50008 \\
+					\hline
+					3 GU vs 3 GB (3D) & 0.56037 & 0.43963 \\
+					\hline
+				\end{tabular}
+
+				\medskip
+
+				3D Collaboration ($n=251$, sample size $=250$)
+			\end{center}
+		\end{minipage}
+		\medskip
+
+	}
+
+	%----------------------------------------------------------------------------------------
+	%%	CONJECTURE
+	%%---------------------------------------------------------------------------------------
+	\headerbox{Conjecture}{name=conj,column=2,below=collab}{
+		\medskip
+
+		Collaboration between agents claims at least as much area in expectation than a solo agent does.
+		\medskip
+
+	}
+	
+	%----------------------------------------------------------------------------------------
+	%%	REFERENCES
+	%%---------------------------------------------------------------------------------------
+	\headerbox{References}{name=references,column=2,below=conj,bottomaligned=compd}{
+		\medskip
+
+		\small{
+			\begin{itemize}\compresslist
+				\item[[1{]}]  P.~Dey ~and D.~Kim, Fluctuation results for size of the vacant set for random walks on discrete torus. Preprint (2021). \emph{Available at https://arxiv.org/abs/2108.06450.}
+				\item[[2{]}] J.~Miller, Painting a graph with competing random walks, Ann.~Probab.~41 (2013), no.~2, 636-670.
+			\end{itemize}
+		}
+	}
+\end{poster}
+\end{document}
